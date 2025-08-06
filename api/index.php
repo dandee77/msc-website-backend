@@ -4,14 +4,21 @@
  * Main entry point for API requests with professional routing
  */
 
-// Enable error reporting for development (disable in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Start output buffering to catch any unexpected output
+ob_start();
 
 // Handle CORS first (this will set Content-Type)
 require_once __DIR__ . '/config/cors.php';
 CorsConfig::setup();
+
+// Disable error display to prevent HTML output in JSON responses
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+
+// Enable error logging instead
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
 
 // Get the request path and method
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -116,26 +123,31 @@ try {
     error_log("API Error: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
     
+    // Clear any output buffer
+    ob_clean();
+    
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'message' => 'Internal server error',
         'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
         'timestamp' => date('Y-m-d H:i:s')
     ]);
 } catch (Error $e) {
     // Handle fatal errors
     error_log("PHP Error: " . $e->getMessage());
     
+    // Clear any output buffer
+    ob_clean();
+    
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'message' => 'Fatal error',
         'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
         'timestamp' => date('Y-m-d H:i:s')
     ]);
 }
+
+// Clear output buffer and send response
+ob_end_flush();

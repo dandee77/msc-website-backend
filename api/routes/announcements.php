@@ -11,10 +11,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathSegments = explode('/', trim($path, '/'));
 
-// Remove 'api' and 'announcements' from path segments to get the actual endpoint
-$endpoint = $pathSegments[2] ?? '';
-$id = $pathSegments[3] ?? null;
-$action = $pathSegments[4] ?? null;
+// Debug logging
+error_log("Announcement route - Path: " . $path);
+error_log("Announcement route - Path segments: " . print_r($pathSegments, true));
+
+// Find the 'api' segment and get the endpoint after 'announcements'
+$apiIndex = array_search('api', $pathSegments);
+$announcementsIndex = array_search('announcements', $pathSegments);
+
+if ($announcementsIndex !== false) {
+    $endpoint = $pathSegments[$announcementsIndex + 1] ?? '';
+    $id = $pathSegments[$announcementsIndex + 2] ?? null;
+    $action = $pathSegments[$announcementsIndex + 3] ?? null;
+} elseif ($apiIndex !== false) {
+    // Path like /msc-website-backend-main/api/announcements/recent
+    $endpoint = $pathSegments[$apiIndex + 2] ?? '';
+    $id = $pathSegments[$apiIndex + 3] ?? null;
+    $action = $pathSegments[$apiIndex + 4] ?? null;
+} else {
+    // Direct path like /announcements/recent (after rewrite)
+    $endpoint = $pathSegments[1] ?? '';
+    $id = $pathSegments[2] ?? null;
+    $action = $pathSegments[3] ?? null;
+}
+
+error_log("Announcement route - Endpoint: " . $endpoint);
+error_log("Announcement route - ID: " . ($id ?? 'null'));
+error_log("Announcement route - Action: " . ($action ?? 'null'));
 
 switch ($method) {
     case 'GET':
@@ -22,41 +45,49 @@ switch ($method) {
             $announcementController->getRecent();
         } elseif ($endpoint === 'search') {
             $announcementController->search();
-        } elseif ($id) {
-            $announcementController->getById($id);
-        } else {
+        } elseif ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $announcementController->getById($endpoint);
+        } elseif ($endpoint === '' || $endpoint === 'all') {
             $announcementController->getAll();
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Announcement endpoint not found: ' . $endpoint]);
         }
         break;
     
     case 'POST':
-        if (!$id) {
+        if ($endpoint === '' || $endpoint === 'create') {
             $announcementController->create();
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'POST endpoint not found: ' . $endpoint]);
         }
         break;
     
     case 'PUT':
-        if ($id && $action === 'archive') {
-            $announcementController->archive($id);
-        } elseif ($id && $action === 'unarchive') {
-            $announcementController->unarchive($id);
-        } elseif ($id) {
-            $announcementController->update($id);
+        if ($endpoint && is_numeric($endpoint) && $id === 'archive') {
+            // endpoint is actually the announcement ID, id is 'archive'
+            $announcementController->archive($endpoint);
+        } elseif ($endpoint && is_numeric($endpoint) && $id === 'unarchive') {
+            // endpoint is actually the announcement ID, id is 'unarchive'
+            $announcementController->unarchive($endpoint);
+        } elseif ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $announcementController->update($endpoint);
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'PUT endpoint not found']);
         }
         break;
     
     case 'DELETE':
-        if ($id) {
-            $announcementController->delete($id);
+        if ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $announcementController->delete($endpoint);
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'DELETE endpoint not found']);
         }
         break;
     

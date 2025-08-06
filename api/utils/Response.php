@@ -11,6 +11,11 @@ class Response
      */
     public static function success($data = null, $message = 'Success', $statusCode = 200)
     {
+        // Clear any output buffer to prevent HTML errors
+        if (ob_get_level()) {
+            ob_clean();
+        }
+        
         http_response_code($statusCode);
         echo json_encode([
             'success' => true,
@@ -26,6 +31,11 @@ class Response
      */
     public static function error($message = 'An error occurred', $statusCode = 400, $errors = null)
     {
+        // Clear any output buffer to prevent HTML errors
+        if (ob_get_level()) {
+            ob_clean();
+        }
+        
         http_response_code($statusCode);
         echo json_encode([
             'success' => false,
