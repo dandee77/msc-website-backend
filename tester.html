@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MSC API Tester</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .container {
+        margin: 20px 0;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MSC Student Portal API Tester</h1>
+
+    <!-- Authentication Section -->
+    <div class="container">
+      <h2>🔐 Authentication</h2>
+
+      <h3>Login</h3>
+      <input
+        type="text"
+        id="loginUsername"
+        placeholder="Username"
+        value="testuser"
+      />
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Password"
+        value="password123"
+      />
+      <button onclick="testLogin()">Login</button>
+
+      <h3>Register</h3>
+      <input
+        type="text"
+        id="regUsername"
+        placeholder="Username"
+        value="newuser"
+      />
+      <input
+        type="email"
+        id="regEmail"
+        placeholder="Email"
+        value="newuser@example.com"
+      />
+      <input
+        type="password"
+        id="regPassword"
+        placeholder="Password"
+        value="password123"
+      />
+      <input
+        type="text"
+        id="regFirstName"
+        placeholder="First Name"
+        value="John"
+      />
+      <input type="text" id="regLastName" placeholder="Last Name" value="Doe" />
+      <button onclick="testRegister()">Register</button>
+
+      <h3>Get Profile</h3>
+      <button onclick="testGetProfile()">Get My Profile</button>
+
+      <h3>Change Password</h3>
+      <input
+        type="password"
+        id="currentPassword"
+        placeholder="Current Password"
+      />
+      <input type="password" id="newPassword" placeholder="New Password" />
+      <button onclick="testChangePassword()">Change Password</button>
+
+      <h3>Logout</h3>
+      <button onclick="testLogout()">Logout</button>
+    </div>
+
+    <!-- Events Section -->
+    <div class="container">
+      <h2>📅 Events</h2>
+
+      <h3>Get All Events</h3>
+      <button onclick="testGetEvents()">Get Events</button>
+
+      <h3>Create Event (Officer Only)</h3>
+      <input
+        type="text"
+        id="eventName"
+        placeholder="Event Name"
+        value="Test Event"
+      />
+      <input type="date" id="eventDate" value="2025-12-25" />
+      <input type="time" id="eventTimeStart" value="10:00" />
+      <input type="time" id="eventTimeEnd" value="12:00" />
+      <input
+        type="text"
+        id="eventLocation"
+        placeholder="Location"
+        value="Main Hall"
+      />
+      <textarea id="eventDescription" placeholder="Description">
+This is a test event</textarea
+      >
+      <select id="eventType">
+        <option value="onsite">Onsite</option>
+        <option value="online">Online</option>
+        <option value="hybrid">Hybrid</option>
+      </select>
+      <button onclick="testCreateEvent()">Create Event</button>
+    </div>
+
+    <!-- Response Section -->
+    <div class="container">
+      <h2>📤 API Response</h2>
+      <div id="response"></div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost/msc-website-backend-main/api";
+
+      function displayResponse(data, isError = false) {
+        const responseDiv = document.getElementById("response");
+        responseDiv.className = `container ${isError ? "error" : "success"}`;
+        responseDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      }
+
+      async function apiCall(endpoint, method = "GET", data = null) {
+        try {
+          const options = {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Important for session cookies
+          };
+
+          if (data) {
+            options.body = JSON.stringify(data);
+          }
+
+          const response = await fetch(`${API_BASE}${endpoint}`, options);
+          const result = await response.json();
+
+          displayResponse(
+            {
+              status: response.status,
+              statusText: response.statusText,
+              data: result,
+            },
+            !response.ok
+          );
+
+          return result;
+        } catch (error) {
+          displayResponse(
+            {
+              error: error.message,
+            },
+            true
+          );
+        }
+      }
+
+      // Authentication Functions
+      async function testLogin() {
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        await apiCall("/auth/login", "POST", {
+          username: username,
+          password: password,
+        });
+      }
+
+      async function testRegister() {
+        const data = {
+          username: document.getElementById("regUsername").value,
+          email: document.getElementById("regEmail").value,
+          password: document.getElementById("regPassword").value,
+          first_name: document.getElementById("regFirstName").value,
+          last_name: document.getElementById("regLastName").value,
+        };
+
+        await apiCall("/auth/register", "POST", data);
+      }
+
+      async function testGetProfile() {
+        await apiCall("/auth/profile");
+      }
+
+      async function testChangePassword() {
+        const data = {
+          current_password: document.getElementById("currentPassword").value,
+          new_password: document.getElementById("newPassword").value,
+        };
+
+        await apiCall("/auth/change-password", "POST", data);
+      }
+
+      async function testLogout() {
+        await apiCall("/auth/logout", "POST");
+      }
+
+      // Event Functions
+      async function testGetEvents() {
+        await apiCall("/events");
+      }
+
+      async function testCreateEvent() {
+        const data = {
+          event_name: document.getElementById("eventName").value,
+          event_date: document.getElementById("eventDate").value,
+          event_time_start: document.getElementById("eventTimeStart").value,
+          event_time_end: document.getElementById("eventTimeEnd").value,
+          location: document.getElementById("eventLocation").value,
+          description: document.getElementById("eventDescription").value,
+          event_type: document.getElementById("eventType").value,
+        };
+
+        await apiCall("/events", "POST", data);
+      }
+    </script>
+  </body>
+</html>

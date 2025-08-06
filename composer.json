@@ -1,0 +1,35 @@
+{
+  "name": "msc/student-portal-api",
+  "description": "Professional PHP API for MSC Student Portal",
+  "version": "1.0.0",
+  "type": "project",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "MSC Development Team",
+      "email": "dev@msc.edu"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MSC\\API\\": "api/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "scripts": {
+    "test": "phpunit",
+    "post-install-cmd": [
+      "@php -r \"copy('api/main.sql', 'database.sql');\""
+    ]
+  }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Route Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .test-box {
+        margin: 10px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+      }
+      .error {
+        background-color: #f8d7da;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔧 Route Testing - Step by Step</h1>
+
+    <div class="test-box">
+      <h3>Step 1: Test Main API</h3>
+      <button onclick="testAPI('/')">Test /api/</button>
+      <div id="result1"></div>
+    </div>
+
+    <div class="test-box">
+      <h3>Step 2: Test Auth Endpoint</h3>
+      <button onclick="testAPI('/auth')">Test /api/auth</button>
+      <div id="result2"></div>
+    </div>
+
+    <div class="test-box">
+      <h3>Step 3: Test Login Endpoint</h3>
+      <button onclick="testLogin()">Test /api/auth/login</button>
+      <div id="result3"></div>
+    </div>
+
+    <div class="test-box">
+      <h3>Step 4: All Results</h3>
+      <div id="allResults"></div>
+    </div>
+
+    <script>
+      const API_BASE = "/msc-website-backend-main/api";
+      let testResults = [];
+
+      async function testAPI(endpoint) {
+        const resultId =
+          endpoint === "/"
+            ? "result1"
+            : endpoint === "/auth"
+            ? "result2"
+            : "result3";
+
+        try {
+          const url = `${API_BASE}${endpoint}`;
+          console.log(`Testing: ${url}`);
+
+          const response = await fetch(url, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          const text = await response.text();
+
+          let result;
+          try {
+            result = JSON.parse(text);
+          } catch (e) {
+            result = { error: "Parse failed", raw: text.substring(0, 200) };
+          }
+
+          const testResult = {
+            endpoint: endpoint,
+            status: response.status,
+            ok: response.ok,
+            result: result,
+          };
+
+          testResults.push(testResult);
+
+          document.getElementById(resultId).innerHTML = `
+                    <div class="${response.ok ? "success" : "error"}">
+                        <strong>Status:</strong> ${response.status}<br>
+                        <strong>OK:</strong> ${response.ok}<br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+
+          updateAllResults();
+        } catch (error) {
+          document.getElementById(resultId).innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+        }
+      }
+
+      async function testLogin() {
+        try {
+          const url = `${API_BASE}/auth/login`;
+          console.log(`Testing login: ${url}`);
+
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: "testuser",
+              password: "password123",
+            }),
+          });
+
+          const text = await response.text();
+
+          let result;
+          try {
+            result = JSON.parse(text);
+          } catch (e) {
+            result = { error: "Parse failed", raw: text.substring(0, 300) };
+          }
+
+          const testResult = {
+            endpoint: "/auth/login",
+            method: "POST",
+            status: response.status,
+            ok: response.ok,
+            result: result,
+          };
+
+          testResults.push(testResult);
+
+          document.getElementById("result3").innerHTML = `
+                    <div class="${response.ok ? "success" : "error"}">
+                        <strong>Status:</strong> ${response.status}<br>
+                        <strong>OK:</strong> ${response.ok}<br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+
+          updateAllResults();
+        } catch (error) {
+          document.getElementById("result3").innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+        }
+      }
+
+      function updateAllResults() {
+        document.getElementById("allResults").innerHTML = `
+                <h4>Summary (${testResults.length} tests)</h4>
+                <pre>${JSON.stringify(testResults, null, 2)}</pre>
+            `;
+      }
+    </script>
+  </body>
+</html>

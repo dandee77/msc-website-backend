@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BulSU Microsoft Student Community</title>
+    <link rel="icon" href="./Logos/Bulsu MSC Logo-02.png" type="image/png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Define the Veonika font face */
+        @font-face {
+            font-family: 'Veonika';
+            src: url('https://fonts.cdnfonts.com/s/72818/veonika_free.woff') format('woff');
+        }
+
+        /* Define the shine keyframes for the new effect */
+        @keyframes shine {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        /* Apply the shine animation to the tagline */
+        .shine-text {
+            color: #b9da05;
+            font-family: 'Veonika', sans-serif;
+            background: linear-gradient(
+                90deg,
+                #b9da05 0%,
+                #ffffff 50%,
+                #b9da05 100%
+            );
+            background-size: 150% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear 1 forwards;
+            animation-delay: 1s;
+        }
+
+        /* Use Segoe UI for the main title on all devices */
+        h1 {
+            font-family: 'Segoe UI', 'Segoe UI Web', 'Segoe UI Symbol', 'Helvetica Neue', 'Arial', sans-serif;
+        }
+
+        /* Use Orbitron for general headings on mobile, Veonika on desktop for some */
+        h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Custom scroll animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Class to initially hide hero text content */
+        .hero-text-hidden {
+            opacity: 0;
+        }
+
+        /* Class to enable hero text fade-in transition */
+        .hero-text-fade-in {
+            transition: opacity 1s ease-in-out;
+        }
+        
+        /* New CSS for the fade-out effect */
+        .fade-out-text {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Set the gradient background for the team and partners section */
+        .gradient-bg {
+            background: linear-gradient(180deg, #00071c 0%, #011538 100%);
+        }
+
+        /* Styles for the interactive header */
+        #main-header {
+            background-color: rgba(0, 7, 28, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #main-header.header-scrolled {
+            background-color: #00071c;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1-px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-link {
+            color: #d1d5db; /* gray-300 */
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #b9da05;
+        }
+        
+        /* Custom CSS for the Photo Background */
+        .photo-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .photo-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+        
+        /* Custom CSS for the team slider */
+        .slider-wrapper {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Adjusted team card width for better responsiveness and to fix long names */
+        .team-card {
+            width: 300px; /* Fixed width to prevent collapsing */
+            max-width: calc(100% - 1rem); /* Ensures it doesn't overflow on small screens */
+            flex-shrink: 0;
+        }
+
+        /* Styles for the inner card element to give it a fixed height */
+        .team-card-inner {
+            height: 300px; /* Fixed height for consistent card size */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space between items for better vertical alignment */
+        }
+        
+        /* Styles for the highlighted team card */
+        .team-card.highlighted .team-card-inner {
+            box-shadow: none; /* Removed the box shadow for the highlight */
+        }
+        
+        /* Custom CSS for the modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background-color: #011538;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+            border: 1px solid #b9da05;
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            color: #b9da05;
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+        .modal-close-button:hover {
+            color: white;
+        }
+        
+        /* Styles for the full-window ad modal (landscape) */
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Higher z-index to be on top of everything */
+            padding: 1rem;
+        }
+
+        /* Container for landscape content */
+        #ad-modal-landscape-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 160vh; /* This sets a base width to maintain aspect ratio */
+            height: 90vh; /* Fallback height */
+            aspect-ratio: 16 / 9; /* Enforce 16:9 aspect ratio */
+            background-color: transparent;
+        }
+
+        /* Container for portrait content */
+        #ad-modal-portrait-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 90vh; /* A good starting point for portrait */
+            height: 160vh; /* Fallback height */
+            aspect-ratio: 9 / 16; /* Enforce 9:16 aspect ratio */
+            background-color: transparent;
+        }
+
+        .ad-modal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensures the GIF fits within the container */
+            display: block;
+        }
+
+        .ad-modal-close-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* New styles to fix the close button for mobile */
+        @media (max-width: 767px) {
+            .ad-modal-close-button {
+                top: 1rem;
+                right: 1rem;
+                transform: none; /* Reset transform for mobile to position it inside the modal content */
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --size: 20px;
+        }
+
+        /* Styles for the full-page background effect */
+        body {
+            font-family: 'Segoe UI', 'Segoe UI Web', 'Segoe UI Symbol', 'Helvetica Neue', 'Arial', sans-serif;
+            background-color: #00071c;
+            scroll-behavior: smooth;
+        }
+        
+        .el {
+            background: conic-gradient(from 180deg at 50% 70%,hsla(0,0%,98%,1) 0deg,#b9da05 72.0000010728836deg,#0051ff 144.0000021457672deg,#0095ff 216.00000858306885deg,#b9da05 288.0000042915344deg,hsla(0,0%,98%,1) 1turn);
+            width: 100%;
+            height: 100%;
+            mask:
+                radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
+                url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
+            mask-composite: intersect;
+            animation: flicker 20s infinite linear;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        @keyframes flicker {
+            to {
+                mask-position: 50% 50%, 0 50%;
+            }
+        }
+        
+        /* New rule to ensure Segoe UI font is used and bold for service h3 tags */
+        #services h3 {
+            font-family: 'Segoe UI', sans-serif !important;
+            font-weight: 700;
+        }
+
+        /* New rule for the highlighted text in the mission/vision section */
+        .highlight-text {
+            color: #b9da05;
+            font-family: 'Segoe UI', sans-serif; /* Changed to Segoe UI */
+            font-weight: bold; /* Changed to bold */
+        }
+        
+        /* Mobile menu specific styles */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Bagong glassy background */
+            background-color: rgba(0, 7, 28, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            /* Ayusin ang transition para maging smooth */
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(-100%);
+            z-index: 40;
+            padding-top: 6rem;
+            display: flex; /* Gamitin ang Flexbox */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mobile-menu.active {
+            transform: translateY(0);
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem; /* Bawas ang gap para mas compact */
+            width: 100%;
+            max-width: 300px; /* Limitahan ang lapad ng menu */
+        }
+        
+        /* Custom CSS to remove line spacing and fix the font for the hero text on mobile */
+        @media (max-width: 767px) {
+            #hero h1 {
+                margin-bottom: 0rem;
+                line-height: 1.2;
+            }
+            #hero p {
+                margin-top: 0rem;
+                line-height: 1;
+            }
+            /* Use Orbitron font on mobile for better compatibility */
+            .shine-text {
+                font-family: 'Orbitron', sans-serif;
+            }
+            /* Team section headings on mobile */
+            #team h2 {
+                font-family: 'Orbitron', sans-serif;
+            }
+            #team h3 {
+                font-family: 'Segoe UI', sans-serif;
+            }
+            /* Other general headings on mobile */
+            h2, #about h2, #services h2, #partners h2, #vision-mission h2 {
+                    font-family: 'Orbitron', sans-serif;
+            }
+
+            /* New rule to center the "Who We Are" content on mobile */
+            #about .flex-col {
+                text-align: center;
+            }
+
+            /* Mobile spacing adjustments for mission and vision */
+            #vision-mission > .container > .grid > div {
+                margin-bottom: 2rem; /* Add more space between cards on mobile */
+            }
+
+            /* Position the mascot for mobile screens */
+            .mascot-container {
+                position: absolute;
+                bottom: -20px;
+                right: -10px;
+                z-index: 10;
+                width: 100px; /* Mas maliit na size para sa mobile */
+                height: 100px;
+                animation: float 4s ease-in-out infinite;
+                display: block; /* Ipakita sa mobile screens */
+            }
+        }
+        
+        /* Fix desktop hero text spacing */
+        @media (min-width: 768px) {
+            #hero h1 {
+                margin-bottom: 0;
+            }
+            /* Team section headings on desktop */
+            #team h2 {
+                font-family: 'Veonika', sans-serif;
+            }
+            #team h3 {
+                font-family: 'Segoe UI', sans-serif;
+            }
+            /* Other general headings on desktop */
+            h2, h3, #about h2, #services h2, #partners h2, #vision-mission h2 {
+                    font-family: 'Veonika', sans-serif;
+            }
+
+            /* Position the mascot for larger screens */
+            .mascot-container {
+                position: absolute;
+                bottom: -20px;
+                right: -20px;
+                z-index: 10;
+                width: 200px;
+                height: 200px;
+                animation: float 4s ease-in-out infinite;
+                display: block; /* Show on larger screens */
+            }
+
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-10px); }
+                100% { transform: translateY(0px); }
+            }
+        }
+        
+        /* Custom scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: #1e293b; /* bg-slate-800 */
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: #b9da05; /* green-400 */
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="el"></div>
+
+    <div id="ad-modal-landscape" class="ad-modal">
+        <div id="ad-modal-landscape-content" class="ad-modal-content">
+            <button class="ad-modal-close-button bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 transition-colors">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <a>
+                <img src="./Announcements/Welcome and Welcome Back/Welcome and Welcome Back L.gif" alt="Promotional Ad">
+            </a>
+        </div>
+    </div>
+
+    <div id="ad-modal-portrait" class="ad-modal">
+        <div id="ad-modal-portrait-content" class="ad-modal-content">
+            <button class="ad-modal-close-button bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 transition-colors">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <a>
+                <img src="./Announcements/Welcome and Welcome Back/Welcome and Welcome Back P.gif" alt="Promotional Ad Portrait">
+            </a>
+        </div>
+    </div>
+
+    <nav id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <a href="#hero" class="flex items-center space-x-2 text-white transition-colors duration-300 hover:text-[#b9da05]">
+                <img src="./Logos/Bulsu MSC Logo-02.png" alt="BULSU MSC Logo" class="h-12">
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a onclick="scrollToSection('hero')" class="text-gray-400 font-semibold transition-colors duration-300 hover:text-[#b9da05] cursor-pointer">Home</a>
+                <a onclick="scrollToSection('about')" class="text-gray-400 font-semibold transition-colors duration-300 hover:text-[#b9da05] cursor-pointer">About</a>
+                <a onclick="scrollToSection('team')" class="text-gray-400 font-semibold transition-colors duration-300 hover:text-[#b9da05] cursor-pointer">Team</a>
+                <a onclick="scrollToSection('partners')" class="text-gray-400 font-semibold transition-colors duration-300 hover:text-[#b9da05] cursor-pointer">Partners</a>
+                <button id="login-button-desktop" class="bg-[#b9da05] text-[#00071c] font-bold py-2 px-4 rounded-full transition-colors duration-300 hover:bg-white hover:text-[#00071c] shadow-md">
+                    Login
+                </button>
+            </div>
+            <div class="md:hidden flex items-center space-x-4">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-[#b9da05] focus:outline-none">
+                    <i id="mobile-menu-icon" class="fas fa-bars text-2xl transition-transform duration-300"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Binago ang mobile menu para sa smooth transition at glassy effect -->
+    <div id="mobile-menu" class="md:hidden">
+        <div class="mobile-nav-links w-full text-center">
+            <a onclick="scrollToSection('hero')" class="block py-4 px-4 text-gray-300 font-semibold hover:bg-white hover:text-[#00071c] transition-colors duration-300 rounded-lg w-full">
+                Home
+            </a>
+            <a onclick="scrollToSection('about')" class="block py-4 px-4 text-gray-300 font-semibold hover:bg-white hover:text-[#00071c] transition-colors duration-300 rounded-lg w-full">
+                About
+            </a>
+            <a onclick="scrollToSection('team')" class="block py-4 px-4 text-gray-300 font-semibold hover:bg-white hover:text-[#00071c] transition-colors duration-300 rounded-lg w-full">
+                Team
+            </a>
+            <a onclick="scrollToSection('partners')" class="block py-4 px-4 text-gray-300 font-semibold hover:bg-white hover:text-[#00071c] transition-colors duration-300 rounded-lg w-full">
+                Partners
+            </a>
+            <button id="login-button-mobile" class="w-full bg-[#b9da05] text-[#00071c] font-bold py-3 px-4 rounded-full transition-colors duration-300 hover:bg-white hover:text-[#00071c] shadow-md mt-4">
+                Login
+            </button>
+        </div>
+    </div>
+    
+    <main>
+        <section id="hero" class="relative pt-24 pb-20 md:py-32 text-center h-screen flex items-center justify-center overflow-hidden">
+            <div class="relative z-10 container mx-auto px-4 text-white">
+                <div id="hero-text-container" class="relative z-20 hero-text-hidden hero-text-fade-in">
+                    <h1 id="hero-title" class="text-xl md:text-4xl font-extrabold leading-tight mb-4 fade-in-up">
+                        What does it take to become
+                    </h1>
+                    <p id="hero-tagline" class="text-6xl md:text-9xl font-bold uppercase shine-text">
+                        MORE
+                    </p>
+                </div>
+                <div id="hero-image-container" class="absolute inset-0 flex items-center justify-center z-10 opacity-0 transition-opacity duration-1000">
+                    <img src="./Logos/XPLore More.png" alt="XPLore More" class="w-4/5 md:w-3/5 h-auto object-contain">
+                </div>
+            </div>
+        </section>
+
+        <div class="gradient-bg">
+            <section id="about" class="py-16 md:py-24">
+                <div class="container mx-auto px-4 fade-in-up">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-white mb-2">Who We Are</h2>
+                    </div>
+                    <div class="flex flex-col lg:flex-row items-center gap-12 relative">
+                        <div class="w-full lg:w-1/2 relative">
+                            <img
+                                src="./Photos/1.jpg"
+                                alt="Our Team"
+                                class="w-full h-auto rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-[1.02]"
+                                onerror="this.onerror=null;this.src='https://placehold.co/600x400/011538/b9da05?text=Our+Team';"
+                            />
+                            <!-- Mascot overlay -->
+                            <div class="mascot-container">
+                                <img src="./Mascot/wave.png" alt="Mascot" class="w-full h-full object-contain">
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2">
+                            <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                                The Bulacan State University – Microsoft Student Community is a recognized university-wide student organization at Bulacan State University founded by Microsoft Learn Student Ambassadors (MLSA) dedicated to inspiring and empowering students in enhancing their skills and knowledge in various Microsoft technologies established in 2022. The organization aims to foster a community of avid technology enthusiasts, aspiring developers, and passionate student leaders. By fostering a collaborative environment, we always aspire to be a force of good; leaving a meaningful and lasting impact on society.
+                            </p>
+                            <p class="text-lg text-gray-300 leading-relaxed font-bold">
+                                Together let us inspire, teach, and promote.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vision-mission" class="relative py-16 md:py-24">
+                <div class="container mx-auto px-4 fade-in-up">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8 xl:gap-12">
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-lg mx-auto">
+                            <div class="text-center mb-6">
+                                <h2 class="text-4xl font-bold text-white mb-2">MISSION</h2>
+                                <p class="text-xl font-bold mb-4">
+                                    <span class="highlight-text">Inspire. Teach. Promote.</span>
+                                </p>
+                            </div>
+                            <p class="text-lg text-gray-300 leading-relaxed text-center">
+                                We empower students with the knowledge and skills needed to excel in the ever-changing field of technology through engaging activities, educational initiatives, and industry partnerships, equipping them with the tools and resources necessary to thrive in the digital age.
+                            </p>
+                        </div>
+
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-lg mx-auto">
+                            <div class="text-center mb-6">
+                                <h2 class="text-4xl font-bold text-white mb-2">VISION</h2>
+                            </div>
+                            <p class="text-lg text-gray-300 leading-relaxed text-center">
+                                We, as a catalyst for positive change and a community of excellence. We cultivate a generation endowed with technological expertise, embracing innovation and leveraging technology for societal advancement, while remaining attuned to the evolving needs of our community. By fostering an environment of collaboration, continuous learning, and ethical practices, <span class="highlight-text">we aspire to be a force for good</span>, making a meaningful and lasting impact on society.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="services" class="py-16 md:py-24">
+                <div class="container mx-auto px-4 fade-in-up">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-white mb-2">Members' Benefits</h2>
+                        <p class="text-lg text-gray-300 max-w-2xl mx-auto">Enjoy this perks and advantages that can help you achieve your goals.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-sm">
+                            <div class="text-[#b9da05] mb-4 text-center">
+                                <i class="fas fa-laptop-code text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Workshops & Seminars</h3>
+                            <p class="text-gray-300">
+                                Join hands-on events that sharpen your skills and prep you for the real world.
+                            </p>
+                        </div>
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-sm">
+                            <div class="text-[#b9da05] mb-4 text-center">
+                                <i class="fas fa-seedling text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Leadership & Growth</h3>
+                            <p class="text-gray-300">
+                                Step up, speak out, or simply grow—we've got the space and support for it.
+                            </p>
+                        </div>
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-sm">
+                            <div class="text-[#b9da05] mb-4 text-center">
+                                <i class="fas fa-briefcase text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Career & Connections</h3>
+                            <p class="text-gray-300">
+                                Meet mentors, alumni, and industry pros who can open doors for your future.
+                            </p>
+                        </div>
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-sm">
+                            <div class="text-[#b9da05] mb-4 text-center">
+                                <i class="fas fa-gem text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Perks & Resources</h3>
+                            <p class="text-gray-300">
+                                Get access to tools, materials, and exclusive perks just for being with MSC.
+                            </p>
+                        </div>
+                        <div class="bg-[#011538] rounded-xl shadow-lg p-8 transform transition-transform duration-300 hover:scale-[1.02] h-full w-full max-w-sm">
+                            <div class="text-[#b9da05] mb-4 text-center">
+                                <i class="fas fa-users text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Belonging & Community</h3>
+                            <p class="text-gray-300">
+                                Connect with students across all courses. There's a place for you here.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Button to Previous Activities Page -->
+                    <div class="mt-12 text-center">
+                        <a href="previous-activities.html" class="bg-[#b9da05] text-[#00071c] font-bold py-3 px-8 rounded-full transition-colors duration-300 hover:bg-white hover:text-[#00071c] shadow-md text-lg">
+                            Check Our Previous Activities
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="team" class="py-16 md:py-24">
+                <div class="max-w-6xl mx-auto px-4 md:px-8 fade-in-up">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-white mb-2">The XPerts</h2>
+                        <p class="text-lg text-gray-300 max-w-2xl mx-auto">Meet the dedicated people behind our mission.</p>
+                    </div>
+                    <div class="relative">
+                        <div id="team-slider-container" class="flex overflow-hidden relative rounded-2xl">
+                            <div id="slider-wrapper" class="flex">
+                                </div>
+                        </div>
+                        <button id="prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 p-3 bg-[#011538] border border-[#b9da05] rounded-full text-[#b9da05] hover:bg-[#b9da05] hover:text-[#011538] transition-colors duration-300 shadow-md">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 p-3 bg-[#011538] border border-[#b9da05] rounded-full text-[#b9da05] hover:bg-[#b9da05] hover:text-[#011538] transition-colors duration-300 shadow-md">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partners" class="py-16 md:py-24 fade-in-up">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-white mb-2">Partners</h2>
+                        <p class="text-lg text-gray-300 max-w-2xl mx-auto">We are proud to collaborate with these organizations who share our vision and support our mission.</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center items-center gap-8">
+                        <a href="https://www.facebook.com/StartUpPodcastPH" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center p-4 transform transition-transform duration-300 hover:scale-[1.05] w-40 h-30">
+                            <img src="./Partners/YR - Start Up Podcast PH.png" alt="Start Up Podcast PH" class="max-w-full max-h-full object-contain p-2">
+                        </a>
+                        <a href="https://phstartup.online/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center p-4 transform transition-transform duration-300 hover:scale-[1.05] w-40 h-30">
+                            <img src="./Partners/phstartuponline_trans.png" alt="Start Up Podcast PH" class="max-w-full max-h-full object-contain p-2">
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-[#00071c] text-center p-6 border-t border-gray-800">
+        <div class="flex justify-center space-x-1 mb-1">
+            <a href="https://www.bulsu.edu.ph" target="_blank" rel="noopener noreferrer"><img src="./Logos/BulSU.png" alt="Bulacan State University Logo" class="h-10"></a>
+            <a href="https://www.facebook.com/osobulsu" target="_blank" rel="noopener noreferrer"><img src="./Logos/OSOA.png" alt="Bulacan State University OSOA Logo" class="h-10 w-10"></a>
+        </div>
+        <p class="text-gray-500 text-sm">&copy; 2025 BulSU Microsoft Student Community. All rights reserved.</p>
+        <div class="flex justify-center space-x-4 mt-2">
+            <a href="https://www.facebook.com/bulsu.officialmsc" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/bulsumsc/" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.threads.com/@bulsumsc" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-threads"></i></a>
+            <a href="https://www.tiktok.com/@bulsumsc" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.linkedin.com/company/bulsumsc/" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-linkedin"></i></a>
+            <a href="https://www.github.com/bulsumsc" target="_blank" class="text-gray-400 hover:text-[#b9da05] transition-colors duration-300"><i class="fab fa-github"></i></a>
+        </div>
+    </footer>
+
+    <div id="status-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button id="modal-close-button" class="modal-close-button">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="flex flex-col items-center">
+                <div class="text-[#b9da05] mb-4">
+                    <i class="fas fa-info-circle text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Login Feature</h3>
+                <p id="modal-message" class="text-gray-300 text-lg">Available soon</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling function
+        function scrollToSection(id) {
+            const section = document.getElementById(id);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+                // Close mobile menu after click if it's open
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileMenuIcon = document.getElementById('mobile-menu-icon');
+                if (mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuButton.classList.remove('active');
+                    mobileMenuIcon.classList.remove('fa-xmark');
+                    mobileMenuIcon.classList.add('fa-bars');
+                    document.body.style.overflow = ''; // Ibalik ang scroll
+                }
+            }
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuIcon = document.getElementById('mobile-menu-icon');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuButton.classList.toggle('active');
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenuIcon.classList.remove('fa-bars');
+                mobileMenuIcon.classList.add('fa-xmark');
+                // Lock the body scroll when the menu is open
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileMenuIcon.classList.remove('fa-xmark');
+                mobileMenuIcon.classList.add('fa-bars');
+                document.body.style.overflow = '';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Scroll animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            // Added #vision-mission to the fade-in-up selector
+            document.querySelectorAll('.fade-in-up').forEach(element => {
+                observer.observe(element);
+            });
+
+            // --- Hero section content and ad modal logic ---
+            const heroTextContainer = document.getElementById('hero-text-container');
+            const heroImageContainer = document.getElementById('hero-image-container');
+            const heroTagline = document.getElementById('hero-tagline');
+            const adModalLandscape = document.getElementById('ad-modal-landscape');
+            const adModalPortrait = document.getElementById('ad-modal-portrait');
+            const adModalCloseButtons = document.querySelectorAll('.ad-modal-close-button');
+            let hasShownAd = false; // Flag to track if the ad has been shown
+
+            // Function to show the correct ad modal based on orientation
+            function showAdModal() {
+                // Check if both modals exist before trying to show them
+                if (adModalLandscape && adModalPortrait && !hasShownAd) {
+                    if (window.innerHeight > window.innerWidth) {
+                        // Portrait mode
+                        adModalPortrait.style.display = 'flex';
+                    } else {
+                        // Landscape mode
+                        adModalLandscape.style.display = 'flex';
+                    }
+                    document.body.style.overflow = 'hidden';
+                    hasShownAd = true; // Set the flag to true
+                    return true; // Return true if a modal was shown
+                }
+                return false; // Return false if no modals were found or ad has already been shown
+            }
+
+            // Function to start the hero animation
+            function startHeroAnimation() {
+                // I-reset muna ang state ng animation para ma-trigger ulit ito
+                heroTagline.classList.remove('shine-text');
+                // I-reflow ang DOM para i-restart ang animation
+                void heroTagline.offsetWidth;
+                heroTextContainer.classList.remove('hero-text-hidden', 'opacity-0');
+                heroTextContainer.classList.add('hero-text-fade-in');
+                heroTagline.classList.add('shine-text'); // I-apply muli ang animation class
+
+                setTimeout(() => {
+                    heroTextContainer.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
+                    setTimeout(() => {
+                        heroTextContainer.style.display = 'none';
+                        heroImageContainer.classList.remove('opacity-0');
+                    }, 1000);
+                }, 4000); // Tumaas ang delay para sa shine animation
+            }
+
+            // Function to hide all ad modals and trigger the hero animation
+            function hideAdModal() {
+                if (adModalLandscape) adModalLandscape.style.display = 'none';
+                if (adModalPortrait) adModalPortrait.style.display = 'none';
+                document.body.style.overflow = ''; // Restores scrolling
+                startHeroAnimation(); // I-call ang animation function dito
+            }
+
+            // Event listeners to close the modals
+            adModalCloseButtons.forEach(button => {
+                button.addEventListener('click', hideAdModal);
+            });
+
+            if (adModalLandscape) {
+                adModalLandscape.addEventListener('click', (e) => {
+                    if (e.target.id === 'ad-modal-landscape') {
+                        hideAdModal();
+                    }
+                });
+            }
+
+            if (adModalPortrait) {
+                adModalPortrait.addEventListener('click', (e) => {
+                    if (e.target.id === 'ad-modal-portrait') {
+                        hideAdModal();
+                    }
+                });
+            }
+            
+            // Check if the ad modal was shown. If not, start the hero animation immediately.
+            const adWasShown = showAdModal();
+            if (!adWasShown) {
+                startHeroAnimation();
+            }
+
+            // --- Dynamic Team Slider Functionality (Infinite Loop & Centering) ---
+            const sliderWrapper = document.getElementById('slider-wrapper');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            // Data for the 40 team members
+            const teamMembers = [
+            {
+                "name": "Glen Justine Batis",
+                "position": "President",
+                "image": "./EB/Batis, Glen Justine P. - President.jpg"
+            },
+            {
+                "name": "Tamira Marie Laki",
+                "position": "VP for Internal Affairs",
+                "image": "./EB/Laki, Tamira Marie A. - Vice President for Internal Affairs.png"
+            },
+            {
+                "name": "Dave Anthony De Jesus",
+                "position": "VP for External Affairs",
+                "image": "./EB/De Jesus, Dave Anthony R. - VP External.png"
+            },
+            {
+                "name": "Raphael De Castro",
+                "position": "Executive Secretary",
+                "image": "./EB/De Castro, Raphael M. - Executive Secretary.jpg"
+            },
+            {
+                "name": "Princess Ann Nicolas",
+                "position": "Associate Secretary",
+                "image": "./EB/Nicolas, Princess Ann S. - Associate Secretary.png"
+            },
+            {
+                "name": "Mary Katherine dela Cruz",
+                "position": "Finance Director",
+                "image": "./EB/Dela Cruz, Mary Katherine C. - Director for Finance.png"
+            },
+            {
+                "name": "Maria Angelica Pauline Lirac",
+                "position": "Audit Director",
+                "image": "./EB/Lirac, Maria Angelica Pauline V. -Director for Audit.jpg"
+            },
+            {
+                "name": "Drew Valdez",
+                "position": "Student Development Director",
+                "image": "./EB/Valdez, Drew M - Director for Student Development.jpg"
+            },
+            {
+                "name": "Aidrhick James Curacha",
+                "position": "Events Director",
+                "image": "./EB/Curacha, Aidrhrick James M. - Director for Events.png"
+            },
+            {
+                "name": "Ichiro Miyahashi",
+                "position": "Creatives Director",
+                "image": "./EB/Miyahashi, Ichiro H. - Director for Creatives.jpg"
+            },
+            {
+                "name": "Maria Virla Eliza Getalado",
+                "position": "Media Director",
+                "image": "./EB/Getalado, Maria Virla Eliza G - Director for Media.jpg"
+            },
+            {
+                "name": "Lorrenz Amarille",
+                "position": "Partnership Lead",
+                "image": "./EB/Amarille, Lorrenz A. - Partnership Lead.png"
+            },
+            {
+                "name": "Hanna Elizabeth Rivera",
+                "position": "Partnership Lead",
+                "image": "./EB/RIVERA HANNA ELIZABETH - Partnership Lead (1).jpg"
+            },
+            {
+                "name": "James Hancel Nicolas",
+                "position": "Sponsorship Lead",
+                "image": "./EB/Nicolas, James Hancel R. - Sponsorship Lead.png"
+            },
+            {
+                "name": "Christian Joeffrey Castro",
+                "position": "Logistics Officer",
+                "image": "./EB/Castro, Christian Joeffrey B. - Logistics Officer.jpg"
+            },
+            {
+                "name": "Sophia Marielle Tubuan",
+                "position": "Logistics Officer",
+                "image": "./EB/Tubuan, Sophia Marielle V - Logistics Officer.png"
+            },
+            {
+                "name": "Thara Del Rosario",
+                "position": "Resource Manager",
+                "image": "./EB/Del Rosario, Thara D - Resource Manager.png"
+            },
+            {
+                "name": "Justine Kelly Diaz",
+                "position": "Procurement Officer",
+                "image": "./EB/Diaz, Justine Kelly E. - Procurement Officer.jpeg"
+            },
+            {
+                "name": "Ryen Uri Enriquez",
+                "position": "Membership Coordinator",
+                "image": "./EB/Enriquez, Ryen Uri C - Membership Coordinator.jpg"
+            },
+            {
+                "name": "James Laurence Belen",
+                "position": "Membership Coordinator",
+                "image": "./EB/Belen, James Laurence E - Membership Coordinator.jpg"
+            },
+            {
+                "name": "Ahlyssa Shane Dela Cruz",
+                "position": "Membership Coordinator",
+                "image": "./EB/Dela Cruz, Ahlyssa Shane D. - Membership Coordinator _20250624_202121_0000.png"
+            },
+            {
+                "name": "Rachelle Joy Quinto",
+                "position": "Content Lead",
+                "image": "./EB/Quinto, Rachelle Joy C - Content Lead.jpg"
+            },
+            {
+                "name": "Mary Kyla Marcelo",
+                "position": "Content Lead",
+                "image": "./EB/Marcelo, Mary Kyla C - Content Lead.jpg"
+            },
+            {
+                "name": "Jaymee Rose Dionisio",
+                "position": "Event Analyst",
+                "image": "./EB/Dionisio, Jaymee Rose M - Event Analyst.jpg"
+            },
+            {
+                "name": "Kim Nas",
+                "position": "Event Analyst",
+                "image": "./EB/Nas, Kim J. - Event Analyst.png"
+            },
+            {
+                "name": "Ian Kenneth Agustin",
+                "position": "Creative Designer",
+                "image": "./EB/Agustin, Ian Kenneth M. - Creative Designer.png"
+            },
+            {
+                "name": "Sharlene Catarina",
+                "position": "Sr. Creative Designer",
+                "image": "./EB/Catarina, Sharlene E. - Creative Designer.jpg"
+            },
+            {
+                "name": "Ariane Mae Santos",
+                "position": "Creative Designer",
+                "image": "./EB/Santos, Ariane Mae R. - Creative Designer.png"
+            },
+            {
+                "name": "Arvey Jed Enriquez",
+                "position": "Sr. Creative Designer",
+                "image": "./EB/Enriquez, Arvey Jed A - Creative Designer.jpg"
+            },
+            {
+                "name": "Jose Danielle Dela Cruz",
+                "position": "Creative Designer",
+                "image": "./EB/Dela Cruz, Jose Danielle L. .png"
+            },
+            {
+                "name": "Francine Nicole Navarro",
+                "position": "Digital Manager",
+                "image": "./EB/Navarro, Francine Nicole D.G. - Digital Manager.png"
+            },
+            {
+                "name": "Rochelle Margarett Abueva",
+                "position": "Digital Manager",
+                "image": "./EB/Abueva, Rochelle Margarett - Digital Manager_.jpg"
+            },
+            {
+                "name": "Aaron Gabriel Ersando",
+                "position": "Technical Support",
+                "image": "./EB/Ersando, Aaron Gabriel H..png"
+            },
+            {
+                "name": "Clark San Pedro",
+                "position": "Technical Support",
+                "image": "./EB/San Pedro, Clark S. - Technical Support.png"
+            },
+            {
+                "name": "Dandee Galang",
+                "position": "Technical Support",
+                "image": "./EB/Galang, Dandee N - Technical Support.jpg"
+            },
+            {
+                "name": "Aaron John Bitara",
+                "position": "Technical Support",
+                "image": "./EB/Bitara, Aaron John - Technical Support.png"
+            },
+            {
+                "name": "Ashley Mae Cruz",
+                "position": "Documentation Officer",
+                "image": "./EB/Cruz, Ashley Mae D. - Documentation Officer.png"
+            },
+            {
+                "name": "Mark Jezreel Santos",
+                "position": "Documentation Officer",
+                "image": "./EB/Santos, Mark Jezreel A. - Documentation Officer.jpg"
+            },
+            {
+                "name": "Adrian Maroma",
+                "position": "Adviser",
+                "image": "./EB/Maroma, Adrian P. - Adviser.jpg"
+            },
+            { 
+                "name": "Noel Lomerio Jr.",
+                "position": "Adviser",
+                "image": "./EB/Lomerio, Noel P. Jr. - Faculty Adviser.jpg"
+            }
+            ];
+
+
+            // Function to generate and append a single card
+            function createCard(member) {
+                const card = document.createElement('div');
+                card.className = 'team-card p-4 flex-shrink-0';
+                card.innerHTML = `
+                    <div class="bg-[#011538] border border-[#b9da05] rounded-2xl p-6 text-center shadow-lg transform transition-transform duration-300 hover:scale-105 team-card-inner">
+                        <img src="${member.image}" alt="Team Member ${member.name}" class="rounded-full w-32 h-32 mx-auto mb-4 border-2 border-[#b9da05]" onerror="this.onerror=null;this.src='https://placehold.co/150x150/011538/b9da05?text=Jane';">
+                        <h3 class="text-xl font-semibold mb-1 text-[#b9da05]">${member.name}</h3>
+                        <p class="text-gray-400 mb-4">${member.position}</p>
+                    </div>
+                `;
+                return card;
+            }
+
+            // Function to populate the slider with cards
+            let cardsInView = 1;
+            function updateCardsInView() {
+                if (window.innerWidth >= 1024) { cardsInView = 3; }
+                else if (window.innerWidth >= 640) { cardsInView = 2; }
+                else { cardsInView = 1; }
+            }
+            
+            function populateSlider() {
+                // Clear existing cards
+                sliderWrapper.innerHTML = '';
+                
+                const cardCount = teamMembers.length;
+                updateCardsInView();
+                
+                // For an infinite loop, we add clones to the start and end.
+                // We add enough clones to fill the screen on either side to make the transition seamless.
+                const clonesAtStart = cardsInView;
+                const clonesAtEnd = cardsInView;
+
+                // Create and append clones for the end of the list to the start of the slider
+                for (let i = cardCount - clonesAtStart; i < cardCount; i++) {
+                    const card = createCard(teamMembers[i]);
+                    sliderWrapper.appendChild(card);
+                }
+
+                // Create and append the original cards
+                teamMembers.forEach(member => {
+                    const card = createCard(member);
+                    sliderWrapper.appendChild(card);
+                });
+
+                // Create and append clones for the start of the list to the end of the slider
+                for (let i = 0; i < clonesAtEnd; i++) {
+                    const card = createCard(teamMembers[i]);
+                    sliderWrapper.appendChild(card);
+                }
+            }
+            
+            let currentSlideIndex = 0;
+            let isAnimating = false;
+
+            const updateSliderPosition = (animate = true) => {
+                const teamCards = document.querySelectorAll('#slider-wrapper .team-card');
+                if (teamCards.length === 0) return;
+
+                // Use the fixed width for the card, or a responsive width if not available.
+                const cardWidth = 300; 
+                const sliderContainerWidth = document.getElementById('team-slider-container').offsetWidth;
+                
+                // Calculate the horizontal offset to center the current card
+                const offsetToCenter = (sliderContainerWidth / 2) - (cardWidth / 2);
+                
+                // Calculate the final transform value
+                let translateX = -(currentSlideIndex * cardWidth) + offsetToCenter;
+                
+                sliderWrapper.style.transition = animate ? 'transform 0.5s ease-in-out' : 'none';
+                sliderWrapper.style.transform = `translateX(${translateX}px)`;
+
+                // Highlight the currently centered card
+                teamCards.forEach((card, index) => {
+                    // Correctly identify the centered card within the non-cloned set
+                    const centerCardIndex = currentSlideIndex - cardsInView;
+                    if (index === currentSlideIndex) {
+                        card.classList.add('highlighted');
+                    } else {
+                        card.classList.remove('highlighted');
+                    }
+                });
+            };
+            
+            // This function handles the infinite loop illusion by instantly resetting the position
+            const checkInfiniteLoop = () => {
+                const cardCount = teamMembers.length;
+                
+                // Check if we've moved to a cloned card at the end of the visual slider
+                if (currentSlideIndex >= cardCount + cardsInView) {
+                    // Instantly snap to the start of the original content
+                    currentSlideIndex = cardsInView;
+                    updateSliderPosition(false);
+                } 
+                // Check if we've moved to a cloned card at the beginning of the visual slider
+                else if (currentSlideIndex < cardsInView) {
+                    // Instantly snap to the end of the original content
+                    currentSlideIndex = cardCount + cardsInView - 1;
+                    updateSliderPosition(false);
+                }
+            };
+            
+            const nextSlide = () => {
+                currentSlideIndex++;
+                updateSliderPosition();
+            };
+
+            const prevSlide = () => {
+                currentSlideIndex--;
+                updateSliderPosition();
+            };
+            
+            // Listen for the end of the CSS transition to perform the 'invisible' snap
+            sliderWrapper.addEventListener('transitionend', () => {
+                checkInfiniteLoop();
+            });
+
+            // Event listeners for the slider buttons
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            window.addEventListener('resize', () => {
+                // Reset to the start on resize and update position
+                populateSlider();
+                currentSlideIndex = cardsInView;
+                updateSliderPosition(false);
+            });
+
+            // Initial setup
+            populateSlider();
+            // Start at the beginning of the original content (skipping clones)
+            updateCardsInView();
+            currentSlideIndex = cardsInView;
+            updateSliderPosition(false);
+
+            // --- Custom Modal Functionality for "Login" button ---
+            const loginButtonDesktop = document.getElementById('login-button-desktop');
+            const loginButtonMobile = document.getElementById('login-button-mobile');
+            const modal = document.getElementById('status-modal');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            const modalMessage = document.getElementById('modal-message');
+
+            function showModal(message) {
+                modalMessage.textContent = message;
+                modal.classList.remove('hidden');
+            }
+
+            function hideModal() {
+                modal.classList.add('hidden');
+            }
+
+            if (loginButtonDesktop) {
+                loginButtonDesktop.addEventListener('click', () => {
+                    showModal("Login will be available soon to our members. Thank you for your patience!");
+                });
+            }
+            if (loginButtonMobile) {
+                loginButtonMobile.addEventListener('click', () => {
+                    showModal("Login will be available soon to our members. Thank you for your patience!");
+                });
+            }
+
+            modalCloseButton.addEventListener('click', hideModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            // --- New: Disable right-click specifically on images ---
+            // This event listener checks if the right-clicked element is an image and prevents the default context menu.
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.nodeName === 'IMG') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            const heroSection = document.getElementById('hero');
+            if (heroSection && window.scrollY > heroSection.offsetHeight / 2) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BulSU MSC</title>
+    <link rel="icon" href="Bulsu MSC Logo-02.png" type="image/png">
+    
+    <!-- Use Tailwind CSS for easy styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use a modern font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /*
+            New CSS to prevent long-press context menu on mobile.
+            -webkit-touch-callout: none;
+            This property is for WebKit browsers (like Safari and Chrome on iOS)
+            and helps prevent the callout menu that appears on a long press on links,
+            images, and other elements.
+        */
+        img {
+            -webkit-touch-callout: none;
+        }
+
+        .gradient-bg {
+            /* Reduced opacity of the gradient and added an option for a background texture */
+            background: linear-gradient(180deg, rgba(0, 7, 28, 0.8) 0%, rgba(1, 21, 56, 0.8) 100%);
+            /* To use a background texture, uncomment the line below and replace the URL with your image. */
+            background-image: url('./Background/msc002.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Custom animation for the new loading icon */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+        .animate-pulse-slow {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <!-- 
+        =================
+        MAIN CONTENT
+        =================
+    -->
+    <!-- Updated container background and border to harmonize with the new gradient -->
+    <div class="text-center max-w-2xl bg-[#0f1d32]/70 backdrop-blur-sm p-8 rounded-xl shadow-2xl border border-[#243d5c]">
+        
+        <!-- New cool loading icon - a stylized SVG spinner -->
+        <!-- The color has been updated to match the lime green from your desired color scheme -->
+        <div class="mb-6 flex justify-center">
+            <svg class="h-16 w-16 text-lime-400 animate-pulse-slow" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <circle class="opacity-25" cx="25" cy="25" r="20" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                <path class="opacity-75" fill="currentColor" d="M25 5 A20 20 0 0 1 45 25 L45 25 A20 20 0 0 1 25 45 L25 45 A20 20 0 0 1 5 25 L5 25 A20 20 0 0 1 25 5 L25 5 Z" stroke-linecap="round"></path>
+            </svg>
+        </div>
+
+        <!-- The h1 color has been updated to a solid lime-400 to match the new color scheme -->
+        <!-- Adjusted the bottom margin from mb-4 to mb-2 for a tighter look -->
+        <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-2 text-lime-400">
+            Coming Soon!
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-200">
+            Our website is currently under maintenance. We are working hard to bring you a new experience. Thank you for your patience!
+        </p>
+
+        <!-- Container for your tagline logo - now placed below the text as requested -->
+        <!-- Adjusted the top and bottom margins from mt-8 mb-8 to mt-1 mb-1 -->
+        <div class="mt-2 mb-3 flex justify-center items-center gap-2">
+            <img src="./Logos/Bulsu MSC Logo-02.png" alt="Bulsu MSC Logo" class="h-5 md:h-12">
+            <img src="./Logos/XPLore More.png" alt="BulSU MSC Tagline Logo" class="h-5 md:h-6">
+        </div>
+        
+        <p class="text-xs text-gray-400">
+            &copy; 2025. BulSU Microsoft Student Community.
+        </p>
+    </div>
+    <script>
+        // --- New: Disable right-click specifically on images ---
+        // This event listener checks if the right-clicked element is an image and prevents the default context menu.
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.nodeName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
