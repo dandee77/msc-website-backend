@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MSC Backend API Tester - Complete</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        margin: 20px 0;
+        padding: 25px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+      }
+
+      .section-icon {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
+      .success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+      }
+      .warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+      }
+
+      .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      button {
+        background: #007bff;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        min-width: 120px;
+      }
+      button:hover {
+        background: #0056b3;
+        transform: translateY(-1px);
+      }
+      button.secondary {
+        background: #6c757d;
+      }
+      button.secondary:hover {
+        background: #545b62;
+      }
+      button.success {
+        background: #28a745;
+      }
+      button.success:hover {
+        background: #218838;
+      }
+      button.danger {
+        background: #dc3545;
+      }
+      button.danger:hover {
+        background: #c82333;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 15px;
+        margin: 10px 0;
+        flex-wrap: wrap;
+      }
+
+      .form-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+
+      pre {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 12px;
+        line-height: 1.4;
+        max-height: 400px;
+        border: 1px solid #e9ecef;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 10px;
+      }
+
+      .status-ok {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 20px;
+      }
+
+      .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        border: none;
+        background: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        margin-right: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        background: #007bff;
+        color: white;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .quick-actions {
+        position: sticky;
+        top: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <h1>🚀 MSC Student Portal - Complete Backend API Tester</h1>
+      <p>Comprehensive testing tool for all API endpoints</p>
+      <div id="connectionStatus" class="status-badge status-error">
+        Not Connected
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h4>🎯 Quick Actions</h4>
+      <div class="button-group">
+        <button onclick="testConnection()">🔌 Test Connection</button>
+        <button onclick="showAllTabs()">📋 Show All Sections</button>
+        <button onclick="clearAllResults()">🗑️ Clear All Results</button>
+        <button onclick="exportResults()" class="secondary">
+          📄 Export Results
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('auth')">
+        🔐 Authentication
+      </button>
+      <button class="tab" onclick="showTab('students')">👥 Students</button>
+      <button class="tab" onclick="showTab('events')">📅 Events</button>
+      <button class="tab" onclick="showTab('announcements')">
+        📢 Announcements
+      </button>
+      <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
+      <button class="tab" onclick="showTab('system')">⚙️ System</button>
+    </div>
+
+    <!-- Authentication Tab -->
+    <div id="auth" class="tab-content active">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">🔐</span>
+          <h2>Authentication Endpoints</h2>
+        </div>
+
+        <h3>Login</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Username or Email</label>
+            <input
+              type="text"
+              id="loginUsername"
+              placeholder="Username or Email"
+              value=""
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Password"
+              value=""
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testLogin()">🔑 Login</button>
+        </div>
+
+        <h3>Register New User</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              id="regUsername"
+              placeholder="Username"
+              value="newuser"
+            />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="regEmail"
+              placeholder="Email"
+              value="newuser@example.com"
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="regPassword"
+              placeholder="Password"
+              value="Password_123"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input
+              type="text"
+              id="regFirstName"
+              placeholder="First Name"
+              value="John"
+            />
+          </div>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input
+              type="text"
+              id="regMiddleName"
+              placeholder="Middle Name"
+              value="M"
+            />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              id="regLastName"
+              placeholder="Last Name"
+              value="Doe"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Student Number</label>
+            <input
+              type="text"
+              id="regStudentNo"
+              placeholder="Student Number"
+              value="2021-12345"
+            />
+          </div>
+          <div class="form-group">
+            <label>Year Level</label>
+            <input
+              type="text"
+              id="regYearLevel"
+              placeholder="Year Level"
+              value="4th Year"
+            />
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select id="regGender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select id="regRole">
+              <option value="member">Member</option>
+              <option value="officer">Officer</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>College</label>
+            <input
+              type="text"
+              id="regCollege"
+              placeholder="College"
+              value="College of Engineering"
+            />
+          </div>
+          <div class="form-group">
+            <label>Program</label>
+            <input
+              type="text"
+              id="regProgram"
+              placeholder="Program"
+              value="Computer Science"
+            />
+          </div>
+          <div class="form-group">
+            <label>Birthdate</label>
+            <input type="date" id="regBirthdate" value="2000-01-01" />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testRegister()" class="success">
+            📝 Register User
+          </button>
+          <button onclick="fillRandomData()" class="secondary">
+            🎲 Fill Random Data
+          </button>
+        </div>
+
+        <h3>Profile & Account Management</h3>
+        <div class="button-group">
+          <button onclick="testGetProfile()">👤 Get My Profile</button>
+          <button onclick="testForgotPassword()" class="warning">
+            🔓 Forgot Password
+          </button>
+          <button onclick="testLogout()" class="danger">🚪 Logout</button>
+        </div>
+
+        <h3>Change Password</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input
+              type="password"
+              id="currentPassword"
+              placeholder="Current Password"
+            />
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="New Password"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testChangePassword()">🔄 Change Password</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Tab -->
+    <div id="students" class="tab-content">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">👥</span>
+          <h2>Student Management</h2>
+        </div>
+
+        <h3>Get Students</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page</label>
+            <input type="number" id="studentsPage" value="1" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Limit</label>
+            <input
+              type="number"
+              id="studentsLimit"
+              value="20"
+              min="1"
+              max="100"
+            />
+          </div>
+          <div class="form-group">
+            <label>Role Filter</label>
+            <select id="studentsRole">
+              <option value="">All Roles</option>
+              <option value="member">Members Only</option>
+              <option value="officer">Officers Only</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetAllStudents()">📋 Get All Students</button>
+          <button onclick="testGetDashboardData()">
+            📊 Get Dashboard Data
+          </button>
+          <button onclick="testSearchStudents()">🔍 Search Students</button>
+        </div>
+
+        <h3>Student Operations</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Student ID</label>
+            <input
+              type="number"
+              id="studentId"
+              placeholder="Enter Student ID"
+              value="1"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetStudentById()">👤 Get Student by ID</button>
+          <button onclick="testToggleStudentActive()" class="warning">
+            🔄 Toggle Active Status
+          </button>
+        </div>
+
+        <h3>Search Students</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Search Query</label>
+            <input
+              type="text"
+              id="searchQuery"
+              placeholder="Search by name, email, student number..."
+              value="john"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testSearchStudents()">🔍 Search Students</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events Tab -->
+    <div id="events" class="tab-content">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">📅</span>
+          <h2>Event Management</h2>
+        </div>
+
+        <h3>Get Events</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page</label>
+            <input type="number" id="eventsPage" value="1" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Limit</label>
+            <input type="number" id="eventsLimit" value="10" min="1" max="50" />
+          </div>
+          <div class="form-group">
+            <label>Status Filter</label>
+            <select id="eventsStatus">
+              <option value="">All Events</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="completed">Completed</option>
+              <option value="canceled">Canceled</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetAllEvents()">📋 Get All Events</button>
+          <button onclick="testGetUpcomingEvents()">🔜 Upcoming Events</button>
+          <button onclick="testGetCalendarEvents()">📅 Calendar Events</button>
+        </div>
+
+        <h3>Event Operations</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Event ID</label>
+            <input
+              type="number"
+              id="eventId"
+              placeholder="Enter Event ID"
+              value="1"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetEventById()">🎯 Get Event by ID</button>
+          <button onclick="testRegisterForEvent()" class="success">
+            ✅ Register for Event
+          </button>
+          <button onclick="testGetEventRegistrations()">
+            👥 Get Registrations
+          </button>
+          <button onclick="testDeleteEvent()" class="danger">
+            🗑️ Delete Event
+          </button>
+        </div>
+
+        <h3>Create New Event</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Event Name</label>
+            <input
+              type="text"
+              id="eventName"
+              placeholder="Event Name"
+              value="Test Event"
+            />
+          </div>
+          <div class="form-group">
+            <label>Event Date</label>
+            <input type="date" id="eventDate" value="2025-12-25" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Time</label>
+            <input type="time" id="eventTimeStart" value="10:00" />
+          </div>
+          <div class="form-group">
+            <label>End Time</label>
+            <input type="time" id="eventTimeEnd" value="12:00" />
+          </div>
+          <div class="form-group">
+            <label>Event Type</label>
+            <select id="eventType">
+              <option value="onsite">Onsite</option>
+              <option value="online">Online</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Location</label>
+            <input
+              type="text"
+              id="eventLocation"
+              placeholder="Location"
+              value="Main Hall"
+            />
+          </div>
+          <div class="form-group">
+            <label>Event Restriction</label>
+            <select id="eventRestriction">
+              <option value="public">Public</option>
+              <option value="members">Members Only</option>
+              <option value="officers">Officers Only</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Description</label>
+            <textarea
+              id="eventDescription"
+              placeholder="Event Description"
+              rows="3"
+            >
+This is a test event</textarea
+            >
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="eventRegistrationRequired" checked />
+              Registration Required
+            </label>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testCreateEvent()" class="success">
+            ➕ Create Event
+          </button>
+          <button onclick="fillEventDefaults()" class="secondary">
+            🎲 Fill Default Data
+          </button>
+        </div>
+
+        <h3>Update Event</h3>
+        <div class="button-group">
+          <button onclick="testUpdateEvent()" class="warning">
+            ✏️ Update Event
+          </button>
+        </div>
+
+        <h3>Attendance Management</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Event ID</label>
+            <input
+              type="number"
+              id="attendanceEventId"
+              placeholder="Event ID"
+              value="1"
+            />
+          </div>
+          <div class="form-group">
+            <label>Student ID</label>
+            <input
+              type="number"
+              id="attendanceStudentId"
+              placeholder="Student ID"
+              value="1"
+            />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="attendanceStatus">
+              <option value="registered">Registered</option>
+              <option value="attended">Attended</option>
+              <option value="absent">Absent</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testUpdateAttendance()" class="warning">
+            ✏️ Update Attendance
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Announcements Tab -->
+    <div id="announcements" class="tab-content">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">📢</span>
+          <h2>Announcement Management</h2>
+        </div>
+
+        <h3>Get Announcements</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Page</label>
+            <input type="number" id="announcementsPage" value="1" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Limit</label>
+            <input
+              type="number"
+              id="announcementsLimit"
+              value="10"
+              min="1"
+              max="50"
+            />
+          </div>
+          <div class="form-group">
+            <label>Include Archived</label>
+            <select id="includeArchived">
+              <option value="false">Active Only</option>
+              <option value="true">Include Archived</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetAllAnnouncements()">
+            📋 Get All Announcements
+          </button>
+          <button onclick="testGetRecentAnnouncements()">
+            🔥 Recent Announcements
+          </button>
+        </div>
+
+        <h3>Announcement Operations</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Announcement ID</label>
+            <input
+              type="number"
+              id="announcementId"
+              placeholder="Enter Announcement ID"
+              value="1"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testGetAnnouncementById()">🎯 Get by ID</button>
+          <button onclick="testArchiveAnnouncement()" class="warning">
+            📦 Archive
+          </button>
+          <button onclick="testUnarchiveAnnouncement()" class="warning">
+            📤 Unarchive
+          </button>
+          <button onclick="testDeleteAnnouncement()" class="danger">
+            🗑️ Delete
+          </button>
+        </div>
+
+        <h3>Create New Announcement</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title</label>
+            <input
+              type="text"
+              id="announcementTitle"
+              placeholder="Announcement Title"
+              value="Test Announcement"
+            />
+          </div>
+          <div class="form-group">
+            <label>Posted By</label>
+            <input
+              type="text"
+              id="announcementPostedBy"
+              placeholder="Posted By"
+              value="Admin"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Content</label>
+            <textarea
+              id="announcementContent"
+              placeholder="Announcement Content"
+              rows="4"
+            >
+This is a test announcement content.</textarea
+            >
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testCreateAnnouncement()" class="success">
+            ➕ Create Announcement
+          </button>
+          <button onclick="fillAnnouncementDefaults()" class="secondary">
+            🎲 Fill Default Data
+          </button>
+        </div>
+
+        <h3>Update Announcement</h3>
+        <div class="button-group">
+          <button onclick="testUpdateAnnouncement()" class="warning">
+            ✏️ Update Announcement
+          </button>
+        </div>
+
+        <h3>Search Announcements</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Search Query</label>
+            <input
+              type="text"
+              id="announcementSearchQuery"
+              placeholder="Search announcements..."
+              value="test"
+            />
+          </div>
+        </div>
+        <div class="button-group">
+          <button onclick="testSearchAnnouncements()">
+            🔍 Search Announcements
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-content">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">📊</span>
+          <h2>Dashboard & Analytics</h2>
+        </div>
+
+        <h3>Dashboard Data</h3>
+        <div class="button-group">
+          <button onclick="testGetDashboardData()">
+            📊 Get Dashboard Stats
+          </button>
+          <button onclick="testGetRecentAnnouncements()">
+            📢 Recent Announcements
+          </button>
+          <button onclick="testGetUpcomingEvents()">� Upcoming Events</button>
+        </div>
+
+        <h3>System Information</h3>
+        <div class="button-group">
+          <button onclick="testHealthCheck()">❤️ Health Check</button>
+          <button onclick="testAPIInfo()">ℹ️ API Information</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Tab -->
+    <div id="system" class="tab-content">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-icon">⚙️</span>
+          <h2>System Testing & Utilities</h2>
+        </div>
+
+        <h3>Connection Tests</h3>
+        <div class="button-group">
+          <button onclick="testConnection()">🔌 Test API Connection</button>
+          <button onclick="testAllEndpoints()" class="warning">
+            🧪 Test All Auth Endpoints
+          </button>
+        </div>
+
+        <h3>Data Management</h3>
+        <div class="button-group">
+          <button onclick="generateTestData()" class="success">
+            🎲 Generate Test Data
+          </button>
+          <button onclick="clearTestResults()" class="danger">
+            🗑️ Clear All Results
+          </button>
+        </div>
+
+        <h3>Bulk Operations</h3>
+        <div class="button-group">
+          <button onclick="runFullSystemTest()" class="warning">
+            🚀 Full System Test
+          </button>
+          <button onclick="testPerformance()" class="secondary">
+            ⚡ Performance Test
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Response Section -->
+    <div class="container">
+      <div class="section-header">
+        <span class="section-icon">📋</span>
+        <h2>API Response & Results</h2>
+      </div>
+      <div id="response">
+        No tests run yet. Select a tab above and click any test button to see
+        results here.
+      </div>
+    </div>
+
+    <script>
+      // Configuration
+      const API_BASE = "/msc-website-backend-main/api";
+      let testResults = [];
+      let currentUser = null;
+
+      // Initialize the tester
+      document.addEventListener("DOMContentLoaded", function () {
+        testConnection();
+        updateConnectionStatus();
+      });
+
+      // Utility Functions
+      function updateConnectionStatus() {
+        const statusEl = document.getElementById("connectionStatus");
+        fetch(`${API_BASE}/`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              statusEl.textContent = "Connected ✅";
+              statusEl.className = "status-badge status-ok";
+            }
+          })
+          .catch(() => {
+            statusEl.textContent = "Disconnected ❌";
+            statusEl.className = "status-badge status-error";
+          });
+      }
+
+      function displayResponse(data, isError = false, title = "") {
+        const responseDiv = document.getElementById("response");
+        const timestamp = new Date().toLocaleTimeString();
+
+        responseDiv.className = `container ${isError ? "error" : "success"}`;
+        responseDiv.innerHTML = `
+          <h4>${
+            title || (isError ? "❌ Error Response" : "✅ Success Response")
+          } - ${timestamp}</h4>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+
+        // Store result
+        testResults.push({
+          timestamp: new Date().toISOString(),
+          title: title,
+          success: !isError,
+          data: data,
+        });
+
+        // Scroll to response
+        responseDiv.scrollIntoView({ behavior: "smooth" });
+      }
+
+      async function apiCall(
+        endpoint,
+        method = "GET",
+        data = null,
+        title = ""
+      ) {
+        try {
+          const options = {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          };
+
+          if (data) {
+            options.body = JSON.stringify(data);
+          }
+
+          console.log(`🚀 ${method} ${endpoint}:`, data);
+
+          const response = await fetch(`${API_BASE}${endpoint}`, options);
+          const result = await response.json();
+
+          displayResponse(
+            {
+              status: response.status,
+              statusText: response.statusText,
+              url: `${API_BASE}${endpoint}`,
+              method: method,
+              data: result,
+            },
+            !response.ok,
+            title || `${method} ${endpoint}`
+          );
+
+          return result;
+        } catch (error) {
+          console.error("API Error:", error);
+          displayResponse(
+            {
+              error: error.message,
+              endpoint: endpoint,
+              method: method,
+            },
+            true,
+            `❌ ${method} ${endpoint} - Network Error`
+          );
+          return null;
+        }
+      }
+
+      // Tab Management
+      function showTab(tabName) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll(".tab-content");
+        tabContents.forEach((tab) => tab.classList.remove("active"));
+
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach((tab) => tab.classList.remove("active"));
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+      }
+
+      function showAllTabs() {
+        const tabContents = document.querySelectorAll(".tab-content");
+        tabContents.forEach((tab) => tab.classList.add("active"));
+      }
+
+      // Authentication Functions
+      async function testLogin() {
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        const result = await apiCall(
+          "/auth/login",
+          "POST",
+          {
+            username: username,
+            password: password,
+          },
+          "🔑 User Login"
+        );
+
+        if (result && result.success) {
+          currentUser = result.user || result.data;
+        }
+      }
+
+      async function testLoginWithEmail() {
+        document.getElementById("loginUsername").value = "test@example.com";
+        await testLogin();
+      }
+
+      async function testRegister() {
+        const data = {
+          username: document.getElementById("regUsername").value,
+          email: document.getElementById("regEmail").value,
+          password: document.getElementById("regPassword").value,
+          first_name: document.getElementById("regFirstName").value,
+          middle_name: document.getElementById("regMiddleName").value,
+          last_name: document.getElementById("regLastName").value,
+          birthdate: document.getElementById("regBirthdate").value,
+          gender: document.getElementById("regGender").value,
+          role: document.getElementById("regRole").value,
+          student_no: document.getElementById("regStudentNo").value,
+          year_level: document.getElementById("regYearLevel").value,
+          college: document.getElementById("regCollege").value,
+          program: document.getElementById("regProgram").value,
+        };
+
+        await apiCall("/auth/register", "POST", data, "📝 User Registration");
+      }
+
+      async function testGetProfile() {
+        await apiCall("/auth/profile", "GET", null, "👤 Get User Profile");
+      }
+
+      async function testChangePassword() {
+        const data = {
+          current_password: document.getElementById("currentPassword").value,
+          new_password: document.getElementById("newPassword").value,
+        };
+
+        await apiCall(
+          "/auth/change-password",
+          "POST",
+          data,
+          "🔄 Change Password"
+        );
+      }
+
+      async function testForgotPassword() {
+        const email = document.getElementById("regEmail").value;
+        await apiCall(
+          "/auth/forgot-password",
+          "POST",
+          { email: email },
+          "🔓 Forgot Password"
+        );
+      }
+
+      async function testLogout() {
+        const result = await apiCall(
+          "/auth/logout",
+          "POST",
+          null,
+          "🚪 User Logout"
+        );
+        if (result && result.success) {
+          currentUser = null;
+        }
+      }
+
+      // Student Functions
+      async function testGetAllStudents() {
+        const page = document.getElementById("studentsPage").value;
+        const limit = document.getElementById("studentsLimit").value;
+        const role = document.getElementById("studentsRole").value;
+
+        let queryParams = `?page=${page}&limit=${limit}`;
+        if (role) queryParams += `&role=${role}`;
+
+        await apiCall(
+          `/students${queryParams}`,
+          "GET",
+          null,
+          "👥 Get All Students"
+        );
+      }
+
+      async function testGetStudentById() {
+        const id = document.getElementById("studentId").value;
+        await apiCall(`/students/${id}`, "GET", null, `👤 Get Student #${id}`);
+      }
+
+      async function testGetDashboardData() {
+        await apiCall("/students/dashboard", "GET", null, "📊 Dashboard Data");
+      }
+
+      async function testSearchStudents() {
+        const query = document.getElementById("searchQuery").value;
+        await apiCall(
+          `/students/search?q=${encodeURIComponent(query)}`,
+          "GET",
+          null,
+          "🔍 Search Students"
+        );
+      }
+
+      async function testToggleStudentActive() {
+        const id = document.getElementById("studentId").value;
+        await apiCall(
+          `/students/${id}/toggle-active`,
+          "POST",
+          null,
+          `🔄 Toggle Student #${id} Active`
+        );
+      }
+
+      // Event Functions
+      async function testGetAllEvents() {
+        const page = document.getElementById("eventsPage").value;
+        const limit = document.getElementById("eventsLimit").value;
+        const status = document.getElementById("eventsStatus").value;
+
+        let queryParams = `?page=${page}&limit=${limit}`;
+        if (status) queryParams += `&status=${status}`;
+
+        await apiCall(
+          `/events${queryParams}`,
+          "GET",
+          null,
+          "📅 Get All Events"
+        );
+      }
+
+      async function testGetEventById() {
+        const id = document.getElementById("eventId").value;
+        await apiCall(`/events/${id}`, "GET", null, `🎯 Get Event #${id}`);
+      }
+
+      async function testGetUpcomingEvents() {
+        await apiCall("/events/upcoming", "GET", null, "🔜 Upcoming Events");
+      }
+
+      async function testGetCalendarEvents() {
+        await apiCall("/events/calendar", "GET", null, "📅 Calendar Events");
+      }
+
+      async function testCreateEvent() {
+        const data = {
+          event_name: document.getElementById("eventName").value,
+          event_date: document.getElementById("eventDate").value,
+          event_time_start: document.getElementById("eventTimeStart").value,
+          event_time_end: document.getElementById("eventTimeEnd").value,
+          location: document.getElementById("eventLocation").value,
+          description: document.getElementById("eventDescription").value,
+          event_type: document.getElementById("eventType").value,
+          event_restriction: document.getElementById("eventRestriction").value,
+          registration_required: document.getElementById(
+            "eventRegistrationRequired"
+          ).checked,
+        };
+
+        await apiCall("/events", "POST", data, "➕ Create Event");
+      }
+
+      async function testUpdateEvent() {
+        const id = document.getElementById("eventId").value;
+        const data = {
+          event_name: document.getElementById("eventName").value,
+          event_date: document.getElementById("eventDate").value,
+          event_time_start: document.getElementById("eventTimeStart").value,
+          event_time_end: document.getElementById("eventTimeEnd").value,
+          location: document.getElementById("eventLocation").value,
+          description: document.getElementById("eventDescription").value,
+          event_type: document.getElementById("eventType").value,
+        };
+
+        await apiCall(`/events/${id}`, "PUT", data, `✏️ Update Event #${id}`);
+      }
+
+      async function testDeleteEvent() {
+        const id = document.getElementById("eventId").value;
+        if (confirm(`Are you sure you want to delete event #${id}?`)) {
+          await apiCall(
+            `/events/${id}`,
+            "DELETE",
+            null,
+            `🗑️ Delete Event #${id}`
+          );
+        }
+      }
+
+      async function testRegisterForEvent() {
+        const id = document.getElementById("eventId").value;
+        await apiCall(
+          `/events/${id}/register`,
+          "POST",
+          null,
+          `✅ Register for Event #${id}`
+        );
+      }
+
+      async function testGetEventRegistrations() {
+        const id = document.getElementById("eventId").value;
+        await apiCall(
+          `/events/${id}/registrations`,
+          "GET",
+          null,
+          `👥 Event #${id} Registrations`
+        );
+      }
+
+      async function testUpdateAttendance() {
+        const eventId = document.getElementById("attendanceEventId").value;
+        const studentId = document.getElementById("attendanceStudentId").value;
+        const status = document.getElementById("attendanceStatus").value;
+
+        await apiCall(
+          `/events/${eventId}/attendance/${studentId}`,
+          "PUT",
+          { attendance_status: status },
+          `✏️ Update Attendance: Event #${eventId}, Student #${studentId}`
+        );
+      }
+
+      // Announcement Functions
+      async function testGetAllAnnouncements() {
+        const page = document.getElementById("announcementsPage").value;
+        const limit = document.getElementById("announcementsLimit").value;
+        const includeArchived =
+          document.getElementById("includeArchived").value;
+
+        let queryParams = `?page=${page}&limit=${limit}&include_archived=${includeArchived}`;
+
+        await apiCall(
+          `/announcements${queryParams}`,
+          "GET",
+          null,
+          "📢 Get All Announcements"
+        );
+      }
+
+      async function testGetAnnouncementById() {
+        const id = document.getElementById("announcementId").value;
+        await apiCall(
+          `/announcements/${id}`,
+          "GET",
+          null,
+          `🎯 Get Announcement #${id}`
+        );
+      }
+
+      async function testGetRecentAnnouncements() {
+        await apiCall(
+          "/announcements/recent",
+          "GET",
+          null,
+          "🔥 Recent Announcements"
+        );
+      }
+
+      async function testCreateAnnouncement() {
+        const data = {
+          title: document.getElementById("announcementTitle").value,
+          content: document.getElementById("announcementContent").value,
+          posted_by: document.getElementById("announcementPostedBy").value,
+        };
+
+        await apiCall("/announcements", "POST", data, "➕ Create Announcement");
+      }
+
+      async function testUpdateAnnouncement() {
+        const id = document.getElementById("announcementId").value;
+        const data = {
+          title: document.getElementById("announcementTitle").value,
+          content: document.getElementById("announcementContent").value,
+          posted_by: document.getElementById("announcementPostedBy").value,
+        };
+
+        await apiCall(
+          `/announcements/${id}`,
+          "PUT",
+          data,
+          `✏️ Update Announcement #${id}`
+        );
+      }
+
+      async function testArchiveAnnouncement() {
+        const id = document.getElementById("announcementId").value;
+        await apiCall(
+          `/announcements/${id}/archive`,
+          "POST",
+          null,
+          `📦 Archive Announcement #${id}`
+        );
+      }
+
+      async function testUnarchiveAnnouncement() {
+        const id = document.getElementById("announcementId").value;
+        await apiCall(
+          `/announcements/${id}/unarchive`,
+          "POST",
+          null,
+          `📤 Unarchive Announcement #${id}`
+        );
+      }
+
+      async function testDeleteAnnouncement() {
+        const id = document.getElementById("announcementId").value;
+        if (confirm(`Are you sure you want to delete announcement #${id}?`)) {
+          await apiCall(
+            `/announcements/${id}`,
+            "DELETE",
+            null,
+            `🗑️ Delete Announcement #${id}`
+          );
+        }
+      }
+
+      async function testSearchAnnouncements() {
+        const query = document.getElementById("announcementSearchQuery").value;
+        await apiCall(
+          `/announcements/search?q=${encodeURIComponent(query)}`,
+          "GET",
+          null,
+          "🔍 Search Announcements"
+        );
+      }
+
+      // System Functions
+      async function testConnection() {
+        await apiCall("/", "GET", null, "🔌 API Connection Test");
+        updateConnectionStatus();
+      }
+
+      async function testHealthCheck() {
+        await apiCall("/health", "GET", null, "❤️ Health Check");
+      }
+
+      async function testAPIInfo() {
+        await apiCall("/", "GET", null, "ℹ️ API Information");
+      }
+
+      // Utility Functions
+      function fillRandomData() {
+        const randomNum = Math.floor(Math.random() * 1000);
+        document.getElementById("regUsername").value = `user${randomNum}`;
+        document.getElementById(
+          "regEmail"
+        ).value = `user${randomNum}@example.com`;
+        document.getElementById("regFirstName").value = "Test";
+        document.getElementById("regLastName").value = `User${randomNum}`;
+        document.getElementById("regStudentNo").value = `2021-${
+          10000 + randomNum
+        }`;
+      }
+
+      function fillEventDefaults() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById("eventDate").value = tomorrow
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("eventName").value = `Test Event ${Math.floor(
+          Math.random() * 100
+        )}`;
+      }
+
+      function fillAnnouncementDefaults() {
+        const num = Math.floor(Math.random() * 100);
+        document.getElementById(
+          "announcementTitle"
+        ).value = `Test Announcement ${num}`;
+        document.getElementById(
+          "announcementContent"
+        ).value = `This is test announcement content number ${num}.`;
+      }
+
+      function clearAllResults() {
+        testResults = [];
+        document.getElementById("response").innerHTML = "All results cleared.";
+      }
+
+      function exportResults() {
+        const data = JSON.stringify(testResults, null, 2);
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `msc-api-test-results-${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+        a.click();
+      }
+
+      // Advanced Testing Functions
+      async function testAllEndpoints() {
+        displayResponse(
+          { message: "Starting comprehensive endpoint test..." },
+          false,
+          "🧪 Starting Full Test"
+        );
+
+        await testConnection();
+        await new Promise((r) => setTimeout(r, 500));
+
+        // Test auth endpoints
+        await apiCall("/auth", "GET", null, "Auth Endpoints Info");
+        await new Promise((r) => setTimeout(r, 500));
+
+        displayResponse(
+          { message: "Endpoint test completed!" },
+          false,
+          "✅ Test Complete"
+        );
+      }
+
+      async function runFullSystemTest() {
+        displayResponse(
+          { message: "Starting full system test..." },
+          false,
+          "🚀 System Test Started"
+        );
+
+        const tests = [
+          () => testConnection(),
+          () => testAPIInfo(),
+          () => testHealthCheck(),
+          () => apiCall("/auth", "GET", null, "Auth Info"),
+          () => testGetAllEvents(),
+          () => testGetAllAnnouncements(),
+        ];
+
+        for (let i = 0; i < tests.length; i++) {
+          await tests[i]();
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+
+        displayResponse(
+          {
+            message: "Full system test completed!",
+            tests_run: tests.length,
+            timestamp: new Date().toISOString(),
+          },
+          false,
+          "✅ Full System Test Complete"
+        );
+      }
+
+      async function testPerformance() {
+        const startTime = performance.now();
+
+        displayResponse(
+          { message: "Starting performance test..." },
+          false,
+          "⚡ Performance Test"
+        );
+
+        const promises = [];
+        for (let i = 0; i < 5; i++) {
+          promises.push(fetch(`${API_BASE}/`));
+        }
+
+        await Promise.all(promises);
+
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
+        displayResponse(
+          {
+            test: "Concurrent API calls",
+            requests: 5,
+            duration_ms: Math.round(duration),
+            avg_per_request: Math.round(duration / 5),
+          },
+          false,
+          "⚡ Performance Test Results"
+        );
+      }
+
+      function generateTestData() {
+        fillRandomData();
+        fillEventDefaults();
+        fillAnnouncementDefaults();
+        displayResponse(
+          { message: "Test data generated in all forms!" },
+          false,
+          "🎲 Test Data Generated"
+        );
+      }
+    </script>
+  </body>
+</html>

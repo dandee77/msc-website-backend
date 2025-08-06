@@ -11,18 +11,16 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathSegments = explode('/', trim($path, '/'));
 
-// Find the 'api' segment and get the endpoint after 'auth'
+
 $apiIndex = array_search('api', $pathSegments);
 $authIndex = array_search('auth', $pathSegments);
 
-// Handle both original and rewritten paths
+// fixed something
 if ($authIndex !== false) {
     $endpoint = $pathSegments[$authIndex + 1] ?? '';
 } elseif ($apiIndex !== false) {
-    // Path like /msc-website-backend-main/api/auth/login
     $endpoint = $pathSegments[$apiIndex + 2] ?? '';
 } else {
-    // Direct path like /auth/login (after rewrite)
     $endpoint = $pathSegments[1] ?? '';
 }
 

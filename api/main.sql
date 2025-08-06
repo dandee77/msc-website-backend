@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS students (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     profile_image_path TEXT,
-    is_active BOOLEAN,
-    officer_role VARCHAR(20)
+    is_active BOOLEAN
 );
 
 -- Create events table

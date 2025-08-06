@@ -11,10 +11,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathSegments = explode('/', trim($path, '/'));
 
-// Remove 'api' and 'events' from path segments to get the actual endpoint
-$endpoint = $pathSegments[2] ?? '';
-$id = $pathSegments[3] ?? null;
-$action = $pathSegments[4] ?? null;
+// Debug logging
+error_log("Event route - Path: " . $path);
+error_log("Event route - Path segments: " . print_r($pathSegments, true));
+
+// Find the 'api' segment and get the endpoint after 'events'
+$apiIndex = array_search('api', $pathSegments);
+$eventsIndex = array_search('events', $pathSegments);
+
+if ($eventsIndex !== false) {
+    $endpoint = $pathSegments[$eventsIndex + 1] ?? '';
+    $id = $pathSegments[$eventsIndex + 2] ?? null;
+    $action = $pathSegments[$eventsIndex + 3] ?? null;
+} elseif ($apiIndex !== false) {
+    // Path like /msc-website-backend-main/api/events/upcoming
+    $endpoint = $pathSegments[$apiIndex + 2] ?? '';
+    $id = $pathSegments[$apiIndex + 3] ?? null;
+    $action = $pathSegments[$apiIndex + 4] ?? null;
+} else {
+    // Direct path like /events/upcoming (after rewrite)
+    $endpoint = $pathSegments[1] ?? '';
+    $id = $pathSegments[2] ?? null;
+    $action = $pathSegments[3] ?? null;
+}
+
+error_log("Event route - Endpoint: " . $endpoint);
+error_log("Event route - ID: " . ($id ?? 'null'));
+error_log("Event route - Action: " . ($action ?? 'null'));
 
 switch ($method) {
     case 'GET':
@@ -22,44 +45,52 @@ switch ($method) {
             $eventController->getUpcoming();
         } elseif ($endpoint === 'calendar') {
             $eventController->getCalendarEvents();
-        } elseif ($id && $action === 'registrations') {
-            $eventController->getRegistrations($id);
-        } elseif ($id) {
-            $eventController->getById($id);
-        } else {
+        } elseif ($endpoint && is_numeric($endpoint) && $id === 'registrations') {
+            // endpoint is actually the event ID, id is 'registrations'
+            $eventController->getRegistrations($endpoint);
+        } elseif ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $eventController->getById($endpoint);
+        } elseif ($endpoint === '' || $endpoint === 'all') {
             $eventController->getAll();
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Event endpoint not found: ' . $endpoint]);
         }
         break;
     
     case 'POST':
-        if ($id && $action === 'register') {
-            $eventController->register($id);
-        } elseif (!$id) {
+        if ($endpoint && is_numeric($endpoint) && $id === 'register') {
+            // endpoint is actually the event ID, id is 'register'
+            $eventController->register($endpoint);
+        } elseif ($endpoint === '' || $endpoint === 'create') {
             $eventController->create();
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'POST endpoint not found: ' . $endpoint]);
         }
         break;
     
     case 'PUT':
-        if ($id && $action === 'attendance' && isset($pathSegments[5])) {
-            $studentId = $pathSegments[5];
-            $eventController->updateAttendance($id, $studentId);
-        } elseif ($id) {
-            $eventController->update($id);
+        if ($endpoint && is_numeric($endpoint) && $id === 'attendance' && $action) {
+            // endpoint is event ID, id is 'attendance', action is student ID
+            $eventController->updateAttendance($endpoint, $action);
+        } elseif ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $eventController->update($endpoint);
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'PUT endpoint not found']);
         }
         break;
     
     case 'DELETE':
-        if ($id) {
-            $eventController->delete($id);
+        if ($endpoint && is_numeric($endpoint)) {
+            // endpoint is actually the ID
+            $eventController->delete($endpoint);
         } else {
             http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
+            echo json_encode(['success' => false, 'message' => 'DELETE endpoint not found']);
         }
         break;
     
